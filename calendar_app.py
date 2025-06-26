@@ -2,8 +2,14 @@ import streamlit as st
 from datetime import datetime, timedelta
 from math import floor
 from streamlit_autorefresh import st_autorefresh
+import pytz
+
+# Auto-refresh every second
 st_autorefresh(interval=1000, limit=None, key="refresh")
 
+# Set timezone
+tz = pytz.timezone("Asia/Kolkata")
+now = datetime.now(tz)
 
 # Constants
 WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -24,7 +30,7 @@ def get_custom_date(today):
     # Handle holidays
     if (not is_leap_year(today.year) and day_of_year > 364):
         return ("Holiday Day", None, None, None, day_of_year)
-    
+
     if is_leap_year(today.year) and day_of_year == 366:
         return ("Leap Holiday", None, None, None, day_of_year)
 
@@ -37,7 +43,6 @@ def get_custom_date(today):
 
     return (ordinal(month), day_in_month, weekday, week, day_of_year)
 
-
 def generate_calendar(year, today_info=None):
     calendar_data = []
     day_counter = 1
@@ -49,14 +54,14 @@ def generate_calendar(year, today_info=None):
             for day in WEEKDAYS:
                 day_text = f"Day {day_counter:03d}: {day}, Week {week+1}"
                 if today_info and ordinal(month) == today_info[0] and day == today_info[2] and (week+1) == today_info[3]:
-                    day_text = f"➡️ **{day_text} ← Today**"
+                    day_text = f"⬅️ **{day_text} ← Today**"
                 month_days.append(day_text)
                 day_counter += 1
         calendar_data.append((month_label, month_days))
 
     holidays = [f"Day {day_counter:03d}: Holiday Day"]
     if today_info and today_info[0] == "Holiday Day":
-        holidays[0] = f"➡️ **{holidays[0]} ← Today**"
+        holidays[0] = f"⬅️ **{holidays[0]} ← Today**"
     day_counter += 1
 
     if is_leap_year(year):
@@ -67,8 +72,8 @@ def generate_calendar(year, today_info=None):
 # Streamlit App
 st.set_page_config(page_title="13-Month Calendar", layout="wide")
 
-# Live Clock & Info
-now = datetime.now()
+# Get accurate now time
+now = datetime.now(tz)
 custom_today = get_custom_date(now)
 
 # Top Section: Big Time and % of day
@@ -82,7 +87,6 @@ with col1:
     percent_day = (seconds_today / SECONDS_IN_DAY) * 100
     st.markdown(f"<h2 style='text-align: center;'>📊 {percent_day:.2f}% of the day passed</h2>", unsafe_allow_html=True)
 
-
 with col2:
     st.markdown("<h1 style='text-align: center;'>📅 Today's Date</h1>", unsafe_allow_html=True)
 
@@ -92,7 +96,7 @@ with col2:
         st.markdown(f"<h3 style='text-align: center;'>🎉 Leap Holiday (Day {custom_today[4]})</h3>", unsafe_allow_html=True)
     else:
         st.markdown(
-            f"<h3 style='text-align: center;'>📌 {custom_today[2]}, {custom_today[0]} Month, Day {custom_today[1]}, Week {custom_today[3]}</h3>",
+            f"<h4 style='text-align: center;'>📌 {custom_today[2]}, {custom_today[0]} Month, Day {custom_today[1]}, Week {custom_today[3]}</h4>",
             unsafe_allow_html=True
         )
 
