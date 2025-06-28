@@ -1,6 +1,5 @@
 <div align="center">
   <h1>📅 13-Month Custom Calendar App ✨</h1>
-  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYmRiYWY1NDIzMmQ2YzVlZDQyYmM2YTAxN2UzNzFiY2ZiNzYxMzkwNyZjdD1n/rzPC5KuSos8rR5BFQt/giphy.gif" width="200px" alt="Calendar Animation" />
 </div>
 
 <div align="center">
